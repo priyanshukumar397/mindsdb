@@ -77,7 +77,7 @@ ENTRYPOINT [ "sh", "-c", "python -m mindsdb --config=/root/mindsdb_config.json -
 
 # This is the final image for most use-cases
 # Copies the installed pip packages from `build` and installs only what we need
-FROM python:3.10-slim
+FROM python:3.13.0rc2-slim
 WORKDIR /mindsdb
 
 # "rm ... docker-clean" stops docker from removing packages from our cache
