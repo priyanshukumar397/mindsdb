@@ -1,4 +1,4 @@
-FROM mysql
+FROM mysql:9.1.0-oraclelinux9
 
 ENV MYSQL_DATABASE test
 
