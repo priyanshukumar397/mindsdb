@@ -7,3 +7,9 @@ chromadb # Knowledge bases.
 langchain-experimental==0.0.53
 -r mindsdb/integrations/handlers/openai_handler/requirements.txt
 -r mindsdb/integrations/handlers/langchain_embedding_handler/requirements.txt
+anyio>=4.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
+fastapi>=0.109.1 # not directly required, pinned by Snyk to avoid a vulnerability
+requests>=2.32.2 # not directly required, pinned by Snyk to avoid a vulnerability
+sympy>=1.12 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
