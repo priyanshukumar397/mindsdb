@@ -58,7 +58,9 @@ class File(Resource):
 
         def on_file(file):
             nonlocal file_object
-            data["file"] = file.file_name.decode()
+            # Sanitize the filename obtained from the multipart request
+            # using the updated clear_filename utility.
+            data["file"] = clear_filename(file.file_name.decode())
             file_object = file.file_object
 
         temp_dir_path = tempfile.mkdtemp(prefix="mindsdb_file_")
@@ -99,16 +101,22 @@ class File(Resource):
         if data.get("source_type") == "url":
             url = data["source"]
             config = Config()
-            allowed_urls = config.get('file_upload_domains', [])
-            if allowed_urls and not validate_urls(url, allowed_urls):
-                return http_error(400, "Invalid File URL source.", f"Allowed hosts are: {', '.join(allowed_urls)}.")
-            data["file"] = clear_filename(data["name"])
-            is_cloud = config.get("cloud", False)
-            if is_cloud and is_private_url(url):
+
+            # Primary check: always check if URL is private or its hostname cannot be resolved.
+            if is_private_url(url):
                 return http_error(
-                    400, f'URL is private: {url}'
+                    400, f'URL is private, its hostname cannot be resolved, or it is otherwise invalid: {url}'
                 )
 
+            # Secondary check: validate against allowed domains if configured.
+            allowed_urls = config.get('file_upload_domains', [])
+            if allowed_urls and not validate_urls(url, allowed_urls):
+                return http_error(400, "Invalid File URL source.", f"Allowed hosts for file uploads are: {', '.join(allowed_urls)}.")
+            
+            data["file"] = clear_filename(data["name"])
+            is_cloud = config.get("cloud", False) # Retain for other logic if needed (e.g. MAX_FILE_SIZE check)
+
+            # The HEAD request below is now protected by the preceding is_private_url and validate_urls checks.
             if is_cloud is True and ctx.user_class != 1:
                 info = requests.head(url)
                 file_size = info.headers.get("Content-Length")
@@ -127,6 +135,8 @@ class File(Resource):
                     return http_error(
                         400, "File is too big", f"Upload limit for file is {MAX_FILE_SIZE >> 20} MB"
                     )
+            # The requests.get call below is also implicitly protected by the earlier unconditional is_private_url check
+            # and the validate_urls check.
             with requests.get(url, stream=True) as r:
                 if r.status_code != 200:
                     return http_error(

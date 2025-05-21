@@ -43,10 +43,16 @@ class CrawlerTable(APITable):
             raise NotImplementedError(
                 'You must specify what url you want to crawl, for example: SELECT * FROM crawl WHERE url = "someurl"')
 
-        allowed_urls = self.config.get('web_crawling_allowed_sites', [])
-        if allowed_urls and not validate_urls(urls, allowed_urls):
-            raise ValueError(f"The provided URL is not allowed for web crawling. Please use any of {', '.join(allowed_urls)}.")
+        # Primary check: iterate through URLs and check if any are private or invalid.
+        for single_url in urls:
+            if is_private_url(single_url):
+                raise ValueError(f"The URL '{single_url}' is private, its hostname cannot be resolved, or it is otherwise invalid. Web crawling from such URLs is not permitted.")
 
+        # Secondary check: validate against allowed sites if configured.
+        allowed_urls = self.config.get('web_crawling_allowed_sites', [])
+        if allowed_urls and not validate_urls(urls, allowed_urls): # `urls` is a list
+            raise ValueError(f"One or more provided URLs are not allowed for web crawling. Allowed sites are: {', '.join(allowed_urls)}.")
+        
         if query.limit is None:
             raise NotImplementedError('You must specify a LIMIT clause which defines the number of pages to crawl')
 
