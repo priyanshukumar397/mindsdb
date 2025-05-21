@@ -63,9 +63,16 @@ class LlamaIndexHandler(BaseMLEngine):
             reader = list(map(lambda x: Document(text=x), dstrs.tolist()))
         elif args_reader == "SimpleWebPageReader":
             url = args["using"]["source_url_link"]
+
+            # Primary check: always check if URL is private or its hostname cannot be resolved.
+            if is_private_url(url):
+                raise ValueError(f"The URL '{url}' is private, its hostname cannot be resolved, or it is otherwise invalid. Web crawling from such URLs is not permitted.")
+
+            # Secondary check: validate against allowed sites if configured.
             allowed_urls = self.config.get('web_crawling_allowed_sites', [])
             if allowed_urls and not validate_urls(url, allowed_urls):
-                raise ValueError(f"The provided URL is not allowed for web crawling. Please use any of {', '.join(allowed_urls)}.")
+                raise ValueError(f"The provided URL is not allowed for web crawling. Allowed sites are: {', '.join(allowed_urls)}.")
+            
             reader = SimpleWebPageReader(html_to_text=True).load_data([url])
         else:
             raise Exception(
