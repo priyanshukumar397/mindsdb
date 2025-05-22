@@ -2,3 +2,4 @@ pyod>=1.1
 catboost>=1.2
 joblib
 xgboost
+setuptools>=78.1.1 # not directly required, pinned by Snyk to avoid a vulnerability
