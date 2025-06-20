@@ -4,3 +4,4 @@ openai==1.24.0
 html2text
 writerai~=1.1.0
 sentence-transformers # needed for HuggingFaceEmbeddings from langchain-community
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
