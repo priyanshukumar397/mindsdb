@@ -1,1 +1,2 @@
 statsforecast==1.6.0
+fugue>=0.9.3 # not directly required, pinned by Snyk to avoid a vulnerability
