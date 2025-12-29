@@ -1,3 +1,5 @@
 ludwig[distributed]>=0.5.2
 ray==2.8.1
 dask
+marshmallow>=3.26.2 # not directly required, pinned by Snyk to avoid a vulnerability
+transformers>=5.0.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
