@@ -2,3 +2,4 @@ tzlocal
 google
 google-api-python-client
 tzlocal
+urllib3>=2.6.3 # not directly required, pinned by Snyk to avoid a vulnerability
