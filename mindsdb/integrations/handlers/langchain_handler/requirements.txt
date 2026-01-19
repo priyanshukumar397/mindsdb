@@ -7,3 +7,4 @@ chromadb # Knowledge bases.
 langchain-experimental==0.0.53
 -r mindsdb/integrations/handlers/openai_handler/requirements.txt
 -r mindsdb/integrations/handlers/langchain_embedding_handler/requirements.txt
+urllib3>=2.6.3 # not directly required, pinned by Snyk to avoid a vulnerability
