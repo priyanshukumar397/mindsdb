@@ -1,3 +1,5 @@
 ludwig[distributed]>=0.5.2
 ray==2.8.1
 dask
+protobuf>=6.33.5 # not directly required, pinned by Snyk to avoid a vulnerability
+torch>=2.10.0 # not directly required, pinned by Snyk to avoid a vulnerability
