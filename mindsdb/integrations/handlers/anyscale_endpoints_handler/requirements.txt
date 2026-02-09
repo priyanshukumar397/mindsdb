@@ -1,3 +1,4 @@
 openai == 1.24.0
 pydantic-settings >= 2.1.0
 -r mindsdb/integrations/handlers/openai_handler/requirements.txt
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
